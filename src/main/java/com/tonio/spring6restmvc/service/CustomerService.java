@@ -1,6 +1,5 @@
 package com.tonio.spring6restmvc.service;
 
-import com.tonio.spring6restmvc.model.Beer;
 import com.tonio.spring6restmvc.model.Customer;
 
 import java.util.List;
