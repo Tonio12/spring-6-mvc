@@ -4,17 +4,18 @@ import com.tonio.spring6restmvc.model.Customer;
 import com.tonio.spring6restmvc.service.BeerService;
 import com.tonio.spring6restmvc.service.CustomerService;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("/api/v1/customers")
+@RequestMapping("/api/v1/customer")
 public class CustomerController {
     private final CustomerService customerService;
     @RequestMapping(method = RequestMethod.GET)
@@ -24,5 +25,14 @@ public class CustomerController {
     @RequestMapping(value = "/{customerId}", method = RequestMethod.GET)
     public Customer getCustomerById(@PathVariable UUID customerId){
         return customerService.getCustomerById(customerId);
+    }
+
+    @PostMapping
+    public ResponseEntity<String> saveCustomer(@RequestBody Customer customer){
+        Customer savedCustomercustomer = customerService.saveCustomer(customer);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Location", "/api/v1/customer/" + savedCustomercustomer.getId());
+        return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 }

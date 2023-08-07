@@ -1,5 +1,6 @@
 package com.tonio.spring6restmvc.service;
 
+import com.tonio.spring6restmvc.model.Beer;
 import com.tonio.spring6restmvc.model.Customer;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
@@ -49,5 +50,20 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public Customer getCustomerById(UUID id) {
         return customers.get(id);
+    }
+
+    @Override
+    public Customer saveCustomer(Customer customer) {
+        Customer savedCustomer = Customer.builder()
+                .id(UUID.randomUUID())
+                .createdDate(LocalDate.now())
+                .lastDateModified(LocalDate.now())
+                .customerName(customer.getCustomerName())
+                .version("v1")
+                .build();
+
+        customers.put(savedCustomer.getId(), savedCustomer);
+
+        return savedCustomer;
     }
 }
