@@ -15,16 +15,17 @@ import java.util.UUID;
 @Slf4j
 @AllArgsConstructor
 @RestController
-@RequestMapping("/api/v1/beer")
 public class BeerController {
     private final BeerService beerService;
+    public static final String BEER_PATH = "/api/v1/beer";
+    public static final String BEER_PATH_ID = BEER_PATH + "/{beerId}";
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping(BEER_PATH)
     public List<Beer> listBeers(){
         return beerService.listBeers();
     }
 
-    @PostMapping
+    @PostMapping(BEER_PATH)
     public ResponseEntity<String> handlePost(@RequestBody Beer beer){
         Beer savedBeer = beerService.saveBeer(beer);
 
@@ -33,7 +34,7 @@ public class BeerController {
 
         return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
-    @RequestMapping(value = "/{beerId}", method = RequestMethod.GET)
+    @GetMapping(BEER_PATH_ID)
     public Beer getBeerById(@PathVariable("beerId") UUID beerId){
 
         log.debug("Get Beer by Id - in controller");
@@ -41,7 +42,7 @@ public class BeerController {
         return beerService.getBeerById(beerId);
     }
 
-    @PutMapping("{beerId}")
+    @PutMapping(BEER_PATH_ID)
     public ResponseEntity<String> updateById(@PathVariable("beerId")UUID beerId, @RequestBody Beer beer){
 
         beerService.updateBeerById(beerId, beer);
@@ -49,7 +50,7 @@ public class BeerController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PatchMapping("{beerId}")
+    @PatchMapping(BEER_PATH_ID)
     public ResponseEntity<String> updateBeerPatchById(@PathVariable("beerId")UUID beerId, @RequestBody Beer beer){
 
         beerService.patchBeerById(beerId, beer);
@@ -57,12 +58,17 @@ public class BeerController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @DeleteMapping("{beerId}")
+    @DeleteMapping(BEER_PATH_ID)
     public ResponseEntity<String> deleteById(@PathVariable("beerId") UUID beerId){
 
         beerService.deleteById(beerId);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<String> handleNotFoundException(){
+        return ResponseEntity.notFound().build();
     }
 
 }

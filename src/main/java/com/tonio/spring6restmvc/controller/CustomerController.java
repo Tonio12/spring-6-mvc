@@ -13,19 +13,20 @@ import java.util.UUID;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("/api/v1/customer")
 public class CustomerController {
     private final CustomerService customerService;
-    @RequestMapping(method = RequestMethod.GET)
+    public static final String CUSTOMER_PATH = "/api/v1/customer";
+    public static final String Customer_Path_Id = CUSTOMER_PATH + "{customerId}";
+    @GetMapping(CUSTOMER_PATH)
     public List<Customer> listCustomers(){
         return customerService.listCustomers();
     }
-    @RequestMapping(value = "/{customerId}", method = RequestMethod.GET)
+    @GetMapping(Customer_Path_Id)
     public Customer getCustomerById(@PathVariable UUID customerId){
         return customerService.getCustomerById(customerId);
     }
 
-    @PostMapping
+    @PostMapping(CUSTOMER_PATH)
     public ResponseEntity<String> saveCustomer(@RequestBody Customer customer){
         Customer savedCustomercustomer = customerService.saveCustomer(customer);
 
@@ -34,21 +35,21 @@ public class CustomerController {
         return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<String> updateById(@PathVariable("id") UUID id,@RequestBody Customer customer){
+    @PutMapping(Customer_Path_Id)
+    public ResponseEntity<String> updateById(@PathVariable("customerId") UUID id,@RequestBody Customer customer){
         customerService.updateById(id, customer);
 
         return  new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @DeleteMapping("{customerId}")
+    @DeleteMapping(Customer_Path_Id)
     public  ResponseEntity<String> deleteCustomerById(@PathVariable("customerId")UUID customerId){
         customerService.deleteById(customerId);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PatchMapping("{customerId}")
+    @PatchMapping(Customer_Path_Id)
     public ResponseEntity<String> updateCustomerByPatch(@PathVariable("customerId") UUID id,@RequestBody Customer customer){
         customerService.patchById(id, customer);
 
