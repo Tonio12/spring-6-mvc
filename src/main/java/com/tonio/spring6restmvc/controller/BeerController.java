@@ -1,6 +1,6 @@
 package com.tonio.spring6restmvc.controller;
 
-import com.tonio.spring6restmvc.model.Beer;
+import com.tonio.spring6restmvc.model.BeerDTO;
 import com.tonio.spring6restmvc.service.BeerService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,13 +21,13 @@ public class BeerController {
     public static final String BEER_PATH_ID = BEER_PATH + "/{beerId}";
 
     @GetMapping(BEER_PATH)
-    public List<Beer> listBeers(){
+    public List<BeerDTO> listBeers(){
         return beerService.listBeers();
     }
 
     @PostMapping(BEER_PATH)
-    public ResponseEntity<String> handlePost(@RequestBody Beer beer){
-        Beer savedBeer = beerService.saveBeer(beer);
+    public ResponseEntity<String> handlePost(@RequestBody BeerDTO beer){
+        BeerDTO savedBeer = beerService.saveBeer(beer);
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Location", "/api/v1/beer/" + savedBeer.getId().toString());
@@ -35,15 +35,15 @@ public class BeerController {
         return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
     @GetMapping(BEER_PATH_ID)
-    public Beer getBeerById(@PathVariable("beerId") UUID beerId){
+    public BeerDTO getBeerById(@PathVariable("beerId") UUID beerId){
 
         log.debug("Get Beer by Id - in controller");
 
-        return beerService.getBeerById(beerId);
+        return beerService.getBeerById(beerId).orElseThrow(NotFoundException::new);
     }
 
     @PutMapping(BEER_PATH_ID)
-    public ResponseEntity<String> updateById(@PathVariable("beerId")UUID beerId, @RequestBody Beer beer){
+    public ResponseEntity<String> updateById(@PathVariable("beerId")UUID beerId, @RequestBody BeerDTO beer){
 
         beerService.updateBeerById(beerId, beer);
 
@@ -51,7 +51,7 @@ public class BeerController {
     }
 
     @PatchMapping(BEER_PATH_ID)
-    public ResponseEntity<String> updateBeerPatchById(@PathVariable("beerId")UUID beerId, @RequestBody Beer beer){
+    public ResponseEntity<String> updateBeerPatchById(@PathVariable("beerId")UUID beerId, @RequestBody BeerDTO beer){
 
         beerService.patchBeerById(beerId, beer);
 
@@ -65,10 +65,4 @@ public class BeerController {
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
-    @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<String> handleNotFoundException(){
-        return ResponseEntity.notFound().build();
-    }
-
 }

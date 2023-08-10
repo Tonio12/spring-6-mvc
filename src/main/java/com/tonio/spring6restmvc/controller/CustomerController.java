@@ -1,6 +1,6 @@
 package com.tonio.spring6restmvc.controller;
 
-import com.tonio.spring6restmvc.model.Customer;
+import com.tonio.spring6restmvc.model.CustomerDTO;
 import com.tonio.spring6restmvc.service.CustomerService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -18,17 +18,17 @@ public class CustomerController {
     public static final String CUSTOMER_PATH = "/api/v1/customer";
     public static final String Customer_Path_Id = CUSTOMER_PATH + "{customerId}";
     @GetMapping(CUSTOMER_PATH)
-    public List<Customer> listCustomers(){
+    public List<CustomerDTO> listCustomers(){
         return customerService.listCustomers();
     }
     @GetMapping(Customer_Path_Id)
-    public Customer getCustomerById(@PathVariable UUID customerId){
-        return customerService.getCustomerById(customerId);
+    public CustomerDTO getCustomerById(@PathVariable UUID customerId){
+        return customerService.getCustomerById(customerId).orElseThrow(NotFoundException::new);
     }
 
     @PostMapping(CUSTOMER_PATH)
-    public ResponseEntity<String> saveCustomer(@RequestBody Customer customer){
-        Customer savedCustomercustomer = customerService.saveCustomer(customer);
+    public ResponseEntity<String> saveCustomer(@RequestBody CustomerDTO customer){
+        CustomerDTO savedCustomercustomer = customerService.saveCustomer(customer);
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Location", "/api/v1/customer/" + savedCustomercustomer.getId());
@@ -36,7 +36,7 @@ public class CustomerController {
     }
 
     @PutMapping(Customer_Path_Id)
-    public ResponseEntity<String> updateById(@PathVariable("customerId") UUID id,@RequestBody Customer customer){
+    public ResponseEntity<String> updateById(@PathVariable("customerId") UUID id,@RequestBody CustomerDTO customer){
         customerService.updateById(id, customer);
 
         return  new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -50,7 +50,7 @@ public class CustomerController {
     }
 
     @PatchMapping(Customer_Path_Id)
-    public ResponseEntity<String> updateCustomerByPatch(@PathVariable("customerId") UUID id,@RequestBody Customer customer){
+    public ResponseEntity<String> updateCustomerByPatch(@PathVariable("customerId") UUID id,@RequestBody CustomerDTO customer){
         customerService.patchById(id, customer);
 
         return  new ResponseEntity<>(HttpStatus.NO_CONTENT);
