@@ -2,8 +2,9 @@ package com.tonio.spring6restmvc.entities;
 
 import com.tonio.spring6restmvc.model.BeerStyle;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import org.hibernate.annotations.GenericGenerator;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -23,7 +24,6 @@ public class Beer {
 
     @Version
     private Integer version;
-
     private String beerName;
     private BeerStyle beerStyle;
     private String upc;

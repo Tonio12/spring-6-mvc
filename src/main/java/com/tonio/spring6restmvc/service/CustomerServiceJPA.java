@@ -10,6 +10,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
+
 @Service
 @Primary
 @RequiredArgsConstructor
@@ -19,12 +22,15 @@ public class CustomerServiceJPA implements CustomerService {
 
     @Override
     public List<CustomerDTO> listCustomers() {
-        return null;
+        return customerRepository.findAll().stream()
+                .map(customerMapper::customerToCustomerDto)
+                .collect(Collectors.toList());
     }
 
     @Override
     public Optional<CustomerDTO> getCustomerById(UUID id) {
-        return Optional.empty();
+        return Optional.ofNullable(customerMapper.customerToCustomerDto(customerRepository
+                .findById(id).orElse(null)));
     }
 
     @Override
@@ -33,17 +39,37 @@ public class CustomerServiceJPA implements CustomerService {
     }
 
     @Override
-    public void updateById(UUID id, CustomerDTO customer) {
+    public Optional<CustomerDTO> updateById(UUID id, CustomerDTO customer) {
+        AtomicReference<Optional<CustomerDTO>> atomicReference = new AtomicReference<>();
 
+        customerRepository.findById(id).ifPresentOrElse(found -> {
+            found.setCustomerName(customer.getCustomerName());
+            atomicReference.set(Optional.of(customerMapper
+                    .customerToCustomerDto(customerRepository.save(found))));
+        }, ()->atomicReference.set(Optional.empty()));
+
+        return atomicReference.get();
     }
 
     @Override
-    public void deleteById(UUID customerId) {
-
+    public Boolean deleteById(UUID customerId) {
+        if(customerRepository.existsById(customerId)){
+            customerRepository.deleteById(customerId);
+            return true;
+        }
+        return false;
     }
 
     @Override
-    public void patchById(UUID id, CustomerDTO customer) {
+    public Optional<CustomerDTO> patchById(UUID id, CustomerDTO customer) {
+        AtomicReference<Optional<CustomerDTO>> atomicReference = new AtomicReference<>();
 
+        customerRepository.findById(id).ifPresentOrElse(found -> {
+            if(customer.getCustomerName()!= null)found.setCustomerName(customer.getCustomerName());
+            atomicReference.set(Optional.of(customerMapper
+                    .customerToCustomerDto(customerRepository.save(found))));
+        }, ()->atomicReference.set(Optional.empty()));
+
+        return atomicReference.get();
     }
 }

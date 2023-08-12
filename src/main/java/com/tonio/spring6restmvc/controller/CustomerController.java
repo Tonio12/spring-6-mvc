@@ -28,30 +28,37 @@ public class CustomerController {
 
     @PostMapping(CUSTOMER_PATH)
     public ResponseEntity<String> saveCustomer(@RequestBody CustomerDTO customer){
-        CustomerDTO savedCustomercustomer = customerService.saveCustomer(customer);
+        CustomerDTO savedCustomerCustomer = customerService.saveCustomer(customer);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Location", "/api/v1/customer/" + savedCustomercustomer.getId());
+        headers.add("Location", "/api/v1/customer/" + savedCustomerCustomer.getId());
         return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
     @PutMapping(Customer_Path_Id)
     public ResponseEntity<String> updateById(@PathVariable("customerId") UUID id,@RequestBody CustomerDTO customer){
-        customerService.updateById(id, customer);
 
-        return  new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        if(customerService.updateById(id, customer).isEmpty()){
+            throw new NotFoundException();
+        }
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @DeleteMapping(Customer_Path_Id)
     public  ResponseEntity<String> deleteCustomerById(@PathVariable("customerId")UUID customerId){
-        customerService.deleteById(customerId);
+        if(!customerService.deleteById(customerId)){
+            throw new NotFoundException();
+        }
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PatchMapping(Customer_Path_Id)
     public ResponseEntity<String> updateCustomerByPatch(@PathVariable("customerId") UUID id,@RequestBody CustomerDTO customer){
-        customerService.patchById(id, customer);
+        if(customerService.patchById(id, customer).isEmpty()){
+            throw new NotFoundException();
+        }
 
         return  new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

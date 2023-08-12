@@ -2,14 +2,10 @@ package com.tonio.spring6restmvc.bootstrap;
 
 import com.tonio.spring6restmvc.entities.Beer;
 import com.tonio.spring6restmvc.entities.Customer;
-import com.tonio.spring6restmvc.model.BeerDTO;
 import com.tonio.spring6restmvc.model.BeerStyle;
-import com.tonio.spring6restmvc.model.CustomerDTO;
 import com.tonio.spring6restmvc.repositories.BeerRepository;
 import com.tonio.spring6restmvc.repositories.CustomerRepository;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -17,7 +13,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
