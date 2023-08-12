@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,7 +28,7 @@ public class CustomerController {
     }
 
     @PostMapping(CUSTOMER_PATH)
-    public ResponseEntity<String> saveCustomer(@RequestBody CustomerDTO customer){
+    public ResponseEntity<String> saveCustomer(@Validated @RequestBody CustomerDTO customer){
         CustomerDTO savedCustomerCustomer = customerService.saveCustomer(customer);
 
         HttpHeaders headers = new HttpHeaders();
@@ -36,7 +37,7 @@ public class CustomerController {
     }
 
     @PutMapping(Customer_Path_Id)
-    public ResponseEntity<String> updateById(@PathVariable("customerId") UUID id,@RequestBody CustomerDTO customer){
+    public ResponseEntity<String> updateById(@PathVariable("customerId") UUID id,@Validated @RequestBody CustomerDTO customer){
 
         if(customerService.updateById(id, customer).isEmpty()){
             throw new NotFoundException();
