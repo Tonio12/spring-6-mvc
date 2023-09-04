@@ -13,6 +13,7 @@ import java.util.UUID;
 public class BeerDTO {
     private UUID id;
     private Integer version;
+
     @NotBlank
     @NotNull
     private String beerName;
