@@ -1,7 +1,9 @@
 package com.tonio.spring6restmvc.service;
 
+import com.tonio.spring6restmvc.entities.Beer;
 import com.tonio.spring6restmvc.mappers.BeerMapper;
 import com.tonio.spring6restmvc.model.BeerDTO;
+import com.tonio.spring6restmvc.model.BeerStyle;
 import com.tonio.spring6restmvc.repositories.BeerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
@@ -27,11 +29,40 @@ public class BeerServiceJPA implements BeerService {
     }
 
     @Override
-    public List<BeerDTO> listBeers() {
-        return beerRepository.findAll()
-                .stream()
+    public List<BeerDTO> listBeers(String beerName, BeerStyle beerStyle, boolean showInventory) {
+        List<Beer> beerList;
+        if(StringUtils.hasText(beerName) && beerStyle == null){
+            beerList = listBeersByName(beerName);
+        }
+        else if(!StringUtils.hasText(beerName) && beerStyle != null){
+            beerList = listBeersByBeerStyle(beerStyle);
+        }
+        else if(StringUtils.hasText(beerName) && beerStyle != null){
+            beerList = listBeersByNameAndStyle(beerName,beerStyle);
+        }
+        else {
+            beerList = beerRepository.findAll();
+        }
+
+        if(!showInventory){
+            beerList.forEach(beer -> beer.setQuantityOnHand(null));
+        }
+
+        return beerList.stream()
                 .map(beerMapper::beerToBeerDTO)
                 .collect(Collectors.toList());
+    }
+
+    private List<Beer> listBeersByNameAndStyle(String beerName, BeerStyle beerStyle) {
+        return beerRepository.findAllByBeerNameIsLikeIgnoreCaseAndBeerStyle("%" + beerName + "%", beerStyle);
+    }
+
+    private List<Beer> listBeersByBeerStyle(BeerStyle beerStyle) {
+        return beerRepository.findAllByBeerStyle(beerStyle);
+    }
+
+    private List<Beer> listBeersByName(String beerName){
+        return beerRepository.findAllByBeerNameIsLikeIgnoreCase("%" + beerName + "%");
     }
 
     @Override

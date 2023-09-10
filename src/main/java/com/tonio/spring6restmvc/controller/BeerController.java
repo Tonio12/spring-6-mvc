@@ -1,6 +1,7 @@
 package com.tonio.spring6restmvc.controller;
 
 import com.tonio.spring6restmvc.model.BeerDTO;
+import com.tonio.spring6restmvc.model.BeerStyle;
 import com.tonio.spring6restmvc.service.BeerService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,8 +23,10 @@ public class BeerController {
     public static final String BEER_PATH_ID = BEER_PATH + "/{beerId}";
 
     @GetMapping(BEER_PATH)
-    public List<BeerDTO> listBeers(){
-        return beerService.listBeers();
+    public List<BeerDTO> listBeers(@RequestParam(required = false) String beerName,
+                                   @RequestParam(required = false) BeerStyle beerStyle,
+                                   @RequestParam(required = false) boolean showInventory){
+        return beerService.listBeers(beerName, beerStyle, showInventory);
     }
 
     @PostMapping(BEER_PATH)
