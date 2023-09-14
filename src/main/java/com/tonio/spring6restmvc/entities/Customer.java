@@ -9,6 +9,7 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDate;
+import java.util.Set;
 import java.util.UUID;
 @Getter
 @Setter
@@ -36,4 +37,7 @@ public class Customer {
     private Integer version;
     private LocalDate createdDate;
     private LocalDate lastDateModified;
+
+    @OneToMany(mappedBy = "customer")
+    private Set<BeerOrder> beerOrders;
 }
