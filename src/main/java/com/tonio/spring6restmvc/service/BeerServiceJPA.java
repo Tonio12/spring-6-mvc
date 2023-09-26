@@ -34,7 +34,7 @@ public class BeerServiceJPA implements BeerService {
     }
 
     @Override
-    public Page<BeerDTO> listBeers(String beerName, BeerStyle beerStyle, boolean showInventory,
+    public Page<BeerDTO> listBeers(String beerName, BeerStyle beerStyle, Boolean showInventory,
                                    Integer pageNumber, Integer pageSize) {
 
         PageRequest pageRequest = buildPageRequest(pageNumber, pageSize);
@@ -50,7 +50,7 @@ public class BeerServiceJPA implements BeerService {
             beerPage = beerRepository.findAll(pageRequest);
         }
 
-        if (!showInventory) {
+        if (showInventory != null && !showInventory) {
             beerPage.forEach(beer -> beer.setQuantityOnHand(null));
         }
 
