@@ -2,6 +2,7 @@ package com.tonio.spring6restmvc.repositories;
 
 import com.tonio.spring6restmvc.entities.Beer;
 import com.tonio.spring6restmvc.entities.Category;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,7 @@ class CategoryRepositoryTest {
     }
 
     @Test
+    @Transactional
     void testAddCategory() {
         Category savedCat = categoryRepository.save(Category.builder()
                         .description("Alex")
